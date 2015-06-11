@@ -392,7 +392,6 @@ module.exports = Backbone.Marionette.AppRouter.extend({
 
     showFabricVlan: function (owner_uuid, id) {
         var self = this;
-        console.log('showFabricVlan id', id, 'uuid', owner_uuid, 'arguments', arguments);
         this.authenticated().then(function () {
             if (!id) {
                 id = owner_uuid;
@@ -414,7 +413,6 @@ module.exports = Backbone.Marionette.AppRouter.extend({
 
     showFabricNetwork: function (owner_uuid, id, uuid) {
         var self = this;
-        console.log('showFabricNetwork id', id, 'uuid', owner_uuid, 'arguments', arguments);
         this.authenticated().then(function () {
             if (!uuid) {
                 uuid = id;

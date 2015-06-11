@@ -12,17 +12,18 @@ var Backbone = require('backbone');
 var Model = require('./model');
 
 module.exports = Model.extend({
+    idAttribute: 'uuid',
+    urlRoot: '/api/fabrics/vlan/networks',
     url: function () {
-        if (this.get('owner_uuid') && this.get('uuid') && this.get('vlan_id') || this.get('vlan_id') >= 0 ) {
-            return _.str.sprintf('/api/fabrics/%s/vlan/%s/networks/%s', this.get('owner_uuid'), this.get('vlan_id'), this.get('uuid'));
-        } else if (this.get('uuid') && this.get('vlan_id') || this.get('vlan_id') >= 0) {
-            return _.str.sprintf('/api/fabrics/vlan/%s/networks/%s', this.get('vlan_id'), this.get('uuid'));
+        var owner_uuid = this.get('owner_uuid');
+        var vlan_id = this.get('vlan_id');
+        var uuid = this.get('uuid');
+        if (owner_uuid && uuid && vlan_id || vlan_id >= 0) {
+            return _.str.sprintf('/api/fabrics/%s/vlan/%s/networks/%s', owner_uuid, vlan_id, uuid);
+        } else if (uuid && vlan_id || vlan_id >= 0) {
+            return _.str.sprintf('/api/fabrics/vlan/%s/networks/%s', vlan_id, uuid);
         }
-        return _.str.sprintf('/api/fabrics/vlan/networks');
-    },
-    urlRoot: function () {
-        return '/api/fabrics/vlan/networks'
-    },
-    idAttribute: 'uuid'
+        return this.urlRoot;
+    }
 });
 

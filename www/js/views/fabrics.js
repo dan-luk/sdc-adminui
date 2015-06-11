@@ -44,7 +44,7 @@ var FabricVlansPage = React.createClass({
     },
     handleSetOwner: function () {
         this.ownerInput.selectedUser = this.ownerInput.selectedUser || {id: adminui.user.id};
-        if (this.ownerInput.selectedUser && this.ownerInput.selectedUser.id !== this.state.userUuid) {
+        if (this.ownerInput.selectedUser.id !== this.state.userUuid) {
             this.setState({params: {owner_uuid: this.ownerInput.selectedUser.id}, userUuid: this.ownerInput.selectedUser.id});
         }
     },
@@ -192,7 +192,7 @@ var FabricVlansList = React.createClass({
         }
         this.setData();
     },
-    componentWillReceiveProps: function(nextProps) {
+    componentWillReceiveProps: function (nextProps) {
         if (nextProps.params !== this.props.params) {
             this.setData({params: nextProps.params});
         }
@@ -220,7 +220,7 @@ var FabricVlansListItem = React.createClass({
         };
     },
     onClick: function () {
-        adminui.vent.trigger('showview', 'fabric-vlan', { model: this.state.model });
+        adminui.vent.trigger('showview', 'fabric-vlan', {model: this.state.model});
         return false;
     },
     deleteVlan: function (data, e) {
@@ -233,10 +233,16 @@ var FabricVlansListItem = React.createClass({
         );
         if (confirm) {
             this.state.model.destroy({contentType: 'application/json', data: JSON.stringify(data)}).done(function () {
-                var notifyMsg = _.str.sprintf('Fabric Vlan <strong>%s</strong> deleted successfully.', vlan.name);
+                var notifyMsg = _.str.sprintf('Fabric vlan <strong>%s</strong> deleted successfully.', vlan.name);
                 adminui.vent.trigger('notification', {
                     level: 'success',
                     message: notifyMsg
+                });
+            }).fail(function (err) {
+                adminui.vent.trigger('notification', {
+                    level: 'error',
+                    message: 'Failed to remove fabric vlan: ' + err.responseData.message,
+                    persistent: true
                 });
             });
         }
@@ -270,10 +276,9 @@ var FabricVlansListItem = React.createClass({
     }
 });
 
-
 module.exports = Backbone.Marionette.View.extend({
     sidebar: 'networking',
-    onShow: function() {
+    onShow: function () {
         var Page = React.createFactory(FabricVlansPage);
         React.render(Page(), this.$el.get(0));
         return this;

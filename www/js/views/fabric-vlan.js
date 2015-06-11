@@ -18,7 +18,10 @@ var NetworksComponent = React.createFactory(require('../components/fabric-networ
 module.exports = Backbone.Marionette.Layout.extend({
     template: require('../tpl/fabric-vlan-detail.hbs'),
     attributes: {
-        'id': 'page-fabric-vlan'
+        id: 'page-fabric-vlan'
+    },
+    regions: {
+        networksRegion: '.networks-region'
     },
     sidebar: 'networking',
     url: function () {
@@ -27,9 +30,6 @@ module.exports = Backbone.Marionette.Layout.extend({
             url += this.model.get('owner_uuid') + '/';
         }
         return url + 'vlan/' + this.model.get('vlan_id');
-    },
-    regions: {
-        "networksRegion": '.networks-region'
     },
     initialize: function () {
         this.networks = new Networks();

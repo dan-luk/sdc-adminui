@@ -12,17 +12,17 @@ var Backbone = require('backbone');
 var Model = require('./model');
 
 module.exports = Model.extend({
+    idAttribute: 'vlan_id',
+    urlRoot: '/api/fabrics/vlan',
     url: function () {
-        if (this.get('owner_uuid') && this.get('vlan_id') || this.get('vlan_id') >= 0) {
-            return _.str.sprintf('/api/fabrics/%s/vlan/%s', this.get('owner_uuid'), this.get('vlan_id'));
-        } else if (this.get('vlan_id') || this.get('vlan_id') >= 0) {
-            return _.str.sprintf('/api/fabrics/vlan/%s', this.get('vlan_id'));
+        var owner_uuid = this.get('owner_uuid');
+        var vlan_id = this.get('vlan_id');
+        if (owner_uuid && vlan_id || vlan_id >= 0) {
+            return _.str.sprintf('/api/fabrics/%s/vlan/%s', owner_uuid, vlan_id);
+        } else if (vlan_id || vlan_id >= 0) {
+            return _.str.sprintf('/api/fabrics/vlan/%s', vlan_id);
         }
-        return _.str.sprintf('/api/fabrics/vlan');
-    },
-    urlRoot: function () {
-        return '/api/fabrics/vlan'
-    },
-    idAttribute: 'vlan_id'
+        return this.urlRoot;
+    }
 });
 

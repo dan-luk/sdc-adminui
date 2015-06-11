@@ -8,9 +8,7 @@
  * Copyright (c) 2015, Joyent, Inc.
  */
 
-"use strict";
-
-
+'use strict';
 var adminui = require('../adminui');
 var _ = require('underscore');
 var React = require('react');
@@ -25,9 +23,7 @@ var NetworksList = React.createClass({
     },
 
     getInitialState: function () {
-        return {
-            collection: this.props.collection
-        };
+        return {collection: this.props.collection};
     },
 
     componentDidMount: function () {
@@ -42,7 +38,7 @@ var NetworksList = React.createClass({
         var self = this;
         var model = new FabricNetwork();
         model.url = this.props.collection.url;
-        var view = this.networkForm = new NetworkForm({
+        var view = new NetworkForm({
             model: model,
             isFabric: true,
             data: this.props.data
@@ -61,7 +57,7 @@ var NetworksList = React.createClass({
         }
 
         var confirm = window.confirm(
-            _.str.sprintf('Are you sure you want to delete the vlan "%s" ?', model.get('name'))
+            _.str.sprintf('Are you sure you want to delete the network "%s" ?', model.get('name'))
         );
         if (confirm) {
             var self = this;
