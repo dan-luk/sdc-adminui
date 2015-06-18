@@ -95,6 +95,10 @@ $(JS_BUNDLE): $(JS_BUNDLE_FILES) | $(NODE_EXEC)
 devrun:
 	@./tools/devrun.sh
 
+.PHONY: ssl
+ssl:
+	@./tools/ssl.sh
+
 .PHONY: test
 test: | $(JS_BUNDLE)
 	$(NPM) test
