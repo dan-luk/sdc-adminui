@@ -45,7 +45,7 @@ SDC services running in
 
 1) ssh to head node
 ```bash
-$ ssh root@10.99.99.200
+$ ssh root@10.88.88.200
 ```
 
 2) create adminui_payload.json
@@ -57,9 +57,9 @@ $ ssh root@10.99.99.200
   "zfs_storage_pool_name": "zones",
   "archive_on_delete": true,
   "package_name": "sdc_2048",
-  "image_uuid": "36786922-1b96-11e5-9af2-43e75d0a43d0",
+  "image_uuid": "bed8190a-1b07-11e5-af52-ef1156e1b040",
   "maintain_resolvers": true,
-  "server_uuid": "564de7fb-e36c-ad57-ab5c-f52f7037e8ce",
+  "server_uuid": "564db874-1cca-8c84-7bfd-2602014520f9",
   "networks": [
     "77605452-fa18-4379-b454-45fe79520f60",
     "0dd6df88-a325-44dd-8bec-95d34c5c377f"
@@ -79,13 +79,15 @@ $ ssh root@10.99.99.200
   "package_version": "1.0.0",
   "billing_id": "8d205d81-3672-4297-b80f-7822eb6c998b",
   "customer_metadata": {
-    "sapi-url": "http://10.9.0.26",
+    "sapi-url": "http://10.99.99.32",
     "user-script": "#!/usr/bin/bash\n#\n# This Source Code Form is subject to the terms of the Mozilla Public\n# License, v. 2.0. If a copy of the MPL was not distributed with this\n# file, You can obtain one at http://mozilla.org/MPL/2.0/.\n#\n\n#\n# Copyright (c) 2014, Joyent, Inc.\n#\n\nexport PS4='[\\D{%FT%TZ}] ${BASH_SOURCE}:${LINENO}: ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'\n\nset -o xtrace\nset -o errexit\nset -o pipefail\n\n#\n# The presence of the /var/svc/.ran-user-script file indicates that the\n# instance has already been setup (i.e. the instance has booted previously).\n#\n# Upon first boot, run the setup.sh script if present. On all boots including\n# the first one, run the configure.sh script if present.\n#\n\nSENTINEL=/var/svc/.ran-user-script\n\nDIR=/opt/smartdc/boot\n\nif [[ ! -e ${SENTINEL} ]]; then\n    if [[ -f ${DIR}/setup.sh ]]; then\n        ${DIR}/setup.sh 2>&1 | tee /var/svc/setup.log\n    fi\n\n    touch ${SENTINEL}\nfi\n\nif [[ ! -f ${DIR}/configure.sh ]]; then\n    echo \"Missing ${DIR}/configure.sh cannot configure.\"\n    exit 1\nfi\n\nexec ${DIR}/configure.sh\n",
-    "assets-ip": "10.9.0.2"
+    "assets-ip": "10.99.99.8"
   },
   "alias": "adminui-test",
   "resolvers": [
-    "10.9.0.5"
+    "10.99.99.11",
+    "8.8.8.8",
+    "8.8.4.4"
   ]
 }
 ```
