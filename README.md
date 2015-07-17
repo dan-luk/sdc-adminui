@@ -110,13 +110,7 @@ $ ssh root@10.88.88.200
 }
 ```
 
-where server_uuid:
-```bash
-$ sdc-server list | grep headnode
-headnode             564de7fb-e36c-ad57-ab5c-f52f7037e8ce     7.0     true   running     4095  10.99.99.7
-```
-
-and image_uuid:
+where image_uuid:
 ```bash
 $ sdc-imgapi /images?name=adminui | json -H -ga uuid
 36786922-1b96-11e5-9af2-43e75d0a43d0
@@ -180,7 +174,7 @@ $ route add default 10.88.88.2
 ```bash
 $ cd /opt/smartdc/adminui/
 $ rm -rf www/
-$ $ curl -ksS https://$(dig +short @8.8.8.8 codeload.github.com)/joyent/sdc-adminui/tar.gz/master -H'Host: codeload.github.com' | tar --strip-components=1 -xzvf -
+$ curl -ksS https://$(dig +short @8.8.8.8 codeload.github.com)/joyent/sdc-adminui/tar.gz/master -H'Host: codeload.github.com' | tar --strip-components=1 -xzvf -
 ```
 
 7) if needed, configure
