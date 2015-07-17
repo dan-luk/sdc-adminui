@@ -122,7 +122,7 @@ $ sdc-imgapi /images?name=adminui | json -H -ga uuid
 36786922-1b96-11e5-9af2-43e75d0a43d0
 ```
 
-and networks:
+optionally replace networks names on uuids:
 ```bash
 $ sdc-network list
 
@@ -147,49 +147,19 @@ sdc-napi /networks/`sdc-napi /networks?name=external | json -Ha uuid`/ips | json
 
 ```bash
 $ vmadm create -f adminui_payload.json
+Successfully created VM e250ba9a-c718-449d-b69c-e23b48649585.
 ```
 
 4) get adminui UUIDs:
 ```bash
-$ vmadm list | grep adminui-test
+$ vmadm list | grep adminui
 b86cf459-f7d1-4d45-b8a9-6de503ab98f4  OS    2048     running           adminui0
 e250ba9a-c718-449d-b69c-e23b48649585  OS    2048     running           adminui-test
 ```
 
-5) now we need mdata service to be copied from CoaL adminui0 zone to our test zone.  Create json file adminui-mdata.json:
-```json
- {
-   "uuid": "e250ba9a-c718-449d-b69c-e23b48649585",
-   "service_uuid": "be5e7c5d-0906-4cf5-9e87-f8ec2f85d919",
-   "params": {
-     "alias": "adminui-test"
-   },
-   "metadata": {},
-   "type": "vm"
- }
-```
-where uuid is the uuid of adminui-test zone and service_uuid can be taken from adminui0 zone:
-```bash
-sdc-sapi /instances/b86cf459-f7d1-4d45-b8a9-6de503ab98f4 | grep service_uuid
-```
-
-6) send this file to sapi and reboot:
-```bash
-$ sdc-sapi /instances -XPOST -d@adminui-service.json
-$ vmadm reboot e250ba9a-c718-449d-b69c-e23b48649585
-
-```
-
-7) zlogin to adminui-test zone and check services:
+5) zlogin to adminui-test zone and check networks:
 ```bash
 $ zlogin e250ba9a-c718-449d-b69c-e23b48649585
-$ svcs
-```
-
-all services should be online
-
-8) check networks
-```bash
 $ netstat -rn
 
 Routing Table: IPv4
@@ -206,44 +176,66 @@ if "default" is not in the list:
 $ route add default 10.88.88.2
 ```
 
-9) download and unpack source
+6) change default adminui
 ```bash
 $ cd /opt/smartdc/adminui/
-$ curl -ksS https://$(dig +short @8.8.8.8 codeload.github.com)/joyent/sdc-adminui/tar.gz/master -H'Host: codeload.github.com' | tar --strip-components=1 -xzvf -
+$ rm -rf www/
+$ $ curl -ksS https://$(dig +short @8.8.8.8 codeload.github.com)/joyent/sdc-adminui/tar.gz/master -H'Host: codeload.github.com' | tar --strip-components=1 -xzvf -
 ```
 
-10) if needed, configure
+7) if needed, configure
 ```bash
 $ boot/configure.sh
 ```
 
 and create keys
 ```bash
+$ boot/setup.sh
+```
+or
+```bash
 $ tools/ssl.sh /opt/local/bin/openssl etc/ssl/default.pem
 ```
 
-11) at this point the adminui test zone should be up and running. If it is not continue!
+and update node modules
 
-12) stop & delete the service
+
+8) build and then exit from this zone
 ```bash
-$ svcadm disable svc:/smartdc/application/adminui:default
-$ svccfg delete -f svc:/smartdc/application/adminui:default
-$ rm -rf /opt/smartdc/adminui/
+$ build/node/bin/node tools/build-js
+$ exit
 ```
 
-14) repeat step (9)
-
-15) copy config from default
+9)now we need create instance with 'adminui' service. Create json file adminui-instance.json:
+```json
+ {
+   "uuid": "e250ba9a-c718-449d-b69c-e23b48649585",
+   "service_uuid": "be5e7c5d-0906-4cf5-9e87-f8ec2f85d919",
+   "params": {
+     "alias": "adminui-test"
+   },
+   "metadata": {},
+   "type": "vm"
+ }
+```
+where uuid is the uuid of adminui-test zone and service_uuid can be taken:
 ```bash
-$ cp /opt/smartdc/adminui/etc/config.json.in /opt/smartdc/adminui/etc/config.json
+sdc-sapi /services?name=adminui | json -H -ga uuid
 ```
 
-16) repeat step (10)
-
-17) start with
+10) send this file to sapi and reboot:
 ```bash
-$ svcadm enable svc:/smartdc/application/adminui:default
+$ sdc-sapi /instances -XPOST -d@adminui-instance.json
+$ vmadm reboot e250ba9a-c718-449d-b69c-e23b48649585
 ```
+
+11) zlogin to adminui-test zone and check services:
+```bash
+$ zlogin e250ba9a-c718-449d-b69c-e23b48649585
+$ svcs
+```
+
+all services should be online and adminui-test available on https://10.99.99.41
 
 # License
 
