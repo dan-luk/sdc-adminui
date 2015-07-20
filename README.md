@@ -45,7 +45,7 @@ SDC services running in
 
 1) ssh to head node
 ```bash
-$ ssh root@10.88.88.200
+ssh root@10.88.88.200
 ```
 
 2) create adminui_payload.json
@@ -127,13 +127,13 @@ external     77605452-fa18-4379-b454-45fe79520f60     0    10.88.88.0/24       1
 
 and ip for nic with nic_tag "admin":
 ```bash
-sdc-napi /networks/`sdc-napi /networks?name=admin | json -Ha uuid`/ips | json  -Hac 'this.free && !this.reserved' ip | head -n 1)
+$ sdc-napi /networks/`sdc-napi /networks?name=admin | json -Ha uuid`/ips | json  -Hac 'this.free && !this.reserved' ip | head -n 1
 10.99.99.41
 ```
 
 and ip for nic with nic_tag "external":
 ```bash
-sdc-napi /networks/`sdc-napi /networks?name=external | json -Ha uuid`/ips | json  -Hac 'this.free && !this.reserved' ip | head -n 1)
+$ sdc-napi /networks/`sdc-napi /networks?name=external | json -Ha uuid`/ips | json  -Hac 'this.free && !this.reserved' ip | head -n 1
 10.88.88.6
 ```
 
@@ -144,14 +144,7 @@ $ vmadm create -f adminui_payload.json
 Successfully created VM e250ba9a-c718-449d-b69c-e23b48649585.
 ```
 
-4) get adminui UUIDs:
-```bash
-$ vmadm list | grep adminui
-b86cf459-f7d1-4d45-b8a9-6de503ab98f4  OS    2048     running           adminui0
-e250ba9a-c718-449d-b69c-e23b48649585  OS    2048     running           adminui-test
-```
-
-5) zlogin to adminui-test zone and check networks:
+4) zlogin to adminui-test zone and check networks:
 ```bash
 $ zlogin e250ba9a-c718-449d-b69c-e23b48649585
 $ netstat -rn
@@ -167,29 +160,29 @@ default              10.88.88.2           UG        2          2 net1
 
 if "default" is not in the list:
 ```bash
-$ route add default 10.88.88.2
+route add default 10.88.88.2
 ```
 
-6) update adminui source:
+5) update adminui source:
 ```bash
-$ cd /opt/smartdc/adminui/
-$ rm -rf www/
-$ curl -ksS https://$(dig +short @8.8.8.8 codeload.github.com)/joyent/sdc-adminui/tar.gz/master -H'Host: codeload.github.com' | tar --strip-components=1 -xzvf -
+cd /opt/smartdc/adminui/
+rm -rf www/ less/ lib/
+curl -ksS https://$(dig +short @8.8.8.8 codeload.github.com)/joyent/sdc-adminui/tar.gz/master -H'Host: codeload.github.com' | tar --strip-components=1 -xzvf -
 ```
 
-7) if needed, configure
+6) if needed, configure
 ```bash
-$ boot/configure.sh
-$ boot/setup.sh
+boot/configure.sh
+tools/ssl.sh /opt/local/bin/openssl etc/ssl/default.pem
 ```
 
-8) build and then leave the zone
+7) build and then leave the zone
 ```bash
-$ build/node/bin/node tools/build-js
-$ exit
+build/node/bin/node tools/build-js
+exit
 ```
 
-9) now we need to create instance with 'adminui' service. Create json file 'adminui-instance.json':
+8) now we need to create instance with 'adminui' service. Create json file 'adminui-instance.json':
 ```json
  {
    "uuid": "e250ba9a-c718-449d-b69c-e23b48649585",
@@ -204,18 +197,19 @@ $ exit
 where uuid is the uuid of adminui-test zone and service_uuid can be taken with:
 ```bash
 $ sdc-sapi /services?name=adminui | json -H -ga uuid
+be5e7c5d-0906-4cf5-9e87-f8ec2f85d919
 ```
 
-10) send this file to sapi and reboot:
+9) send this file to sapi and reboot:
 ```bash
-$ sdc-sapi /instances -XPOST -d@adminui-instance.json
-$ vmadm reboot e250ba9a-c718-449d-b69c-e23b48649585
+sdc-sapi /instances -XPOST -d@adminui-instance.json
+vmadm reboot e250ba9a-c718-449d-b69c-e23b48649585
 ```
 
-11) zlogin to adminui-test zone and check services:
+10) zlogin to adminui-test zone and check services:
 ```bash
-$ zlogin e250ba9a-c718-449d-b69c-e23b48649585
-$ svcs
+zlogin e250ba9a-c718-449d-b69c-e23b48649585
+svcs
 ```
 
 all services should be online and adminui-test available on https://10.99.99.41
