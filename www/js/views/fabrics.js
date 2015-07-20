@@ -95,10 +95,10 @@ var FabricVlansPage = React.createClass({
         var classString = this.state.form ? 'row hidden' : 'row';
         var data = this.state.vlan && this.state.vlan.toJSON() || this.state.params || {owner_uuid: adminui.user.id};
         return <div className="fabric-vlans">
-            <h3>Fabric vLANs
+            <h3>Fabric VLANs
                 <div className="actions">
                     {!this.state.form && <button className="btn btn-sm btn-info" onClick={this._showForm}>
-                        <i className="fa fa-plus"> New Fabric vLAN</i>
+                        <i className="fa fa-plus"> New Fabric VLAN</i>
                     </button>}
                 </div>
             </h3>
@@ -106,7 +106,7 @@ var FabricVlansPage = React.createClass({
                 <div className={classString}>
                     <div className="col-sm-6">
                         <div className="input-group">
-                            <input type="text" placeholder="Search vLANs by Owner login, email or uuid" onKeyUp={this.keyUp} className="form-control owner" ref="owner" name="owner_uuid" />
+                            <input type="text" placeholder="Search VLANs by Owner login, email or uuid" onKeyUp={this.keyUp} className="form-control owner" ref="owner" name="owner_uuid" />
                             <span className="input-group-btn">
                                 <button onClick={this.handleSetOwner} type="button" className="btn btn-info search-by-owner"><i className="fa fa-search"> </i> Search</button>
                             </span>
@@ -152,7 +152,7 @@ var FabricVlanForm = React.createClass({
         var reservedVlans = this.props.vlan_ids && this.props.vlan_ids.join(', ');
         return <div className="panel">
             <div className="panel-body">
-             <h4 className="panel-title">{this.props.data.hasOwnProperty('vlan_id')? 'Edit' : 'New'} Fabric vLAN</h4>
+             <h4 className="panel-title">{this.props.data.hasOwnProperty('vlan_id')? 'Edit' : 'New'} Fabric VLAN</h4>
              <form className="form form-horizontal">
                 { adminui.user.role('operators') &&
                 <div className="form-group">
@@ -186,7 +186,7 @@ var FabricVlanForm = React.createClass({
                 </div>
                 <div className="form-group">
                     <div className="col-sm-offset-5 col-sm-5">
-                        <button disabled={!(this.state.name && this.state.name.length)}  className="btn btn-primary" onClick={this._onSave} type="submit">Save Fabric vLAN</button>
+                        <button disabled={!(this.state.name && this.state.name.length)}  className="btn btn-primary" onClick={this._onSave} type="submit">Save Fabric VLAN</button>
                         <button className="btn btn-link" onClick={this.props.handleClose} type="button">Cancel</button>
                     </div>
                 </div>
