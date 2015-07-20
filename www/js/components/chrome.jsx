@@ -62,19 +62,14 @@ var Chrome = React.createClass({
             return;
         }
     },
-    _handleSignout: function() {
+    _handleSignout: function () {
         adminui.vent.trigger('signout');
     },
-    _handleRootMenuSelect: function(name, type) {
-        var evt;
-        if (type === 'component') {
-            evt = 'showcomponent';
-        } else {
-            evt = 'showview';
-        }
+    _handleRootMenuSelect: function (name, type) {
+        var evt = type === 'component' ? 'showcomponent' : 'showview';
         adminui.vent.trigger(evt, name, {});
     },
-    _handleSelectCurrentUser: function(user) {
+    _handleSelectCurrentUser: function (user) {
         adminui.vent.trigger('showcomponent', 'user', {user: user});
         return false;
     },
