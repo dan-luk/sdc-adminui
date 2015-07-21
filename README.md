@@ -167,7 +167,7 @@ route add default 10.88.88.2
 ```bash
 cd /opt/smartdc/adminui/
 rm -rf www/ less/ lib/
-curl -ksS https://$(dig +short @8.8.8.8 codeload.github.com)/joyent/sdc-adminui/tar.gz/master -H'Host: codeload.github.com' | tar --strip-components=1 -xzvf -
+curl -ksS https://codeload.github.com/joyent/sdc-adminui/tar.gz/master | tar --strip-components=1 -xzvf -
 ```
 
 6) if needed, configure
