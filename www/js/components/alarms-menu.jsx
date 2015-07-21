@@ -18,7 +18,7 @@ var React = require('react');
 var moment = require('moment');
 var Promise = require('promise');
 
-var AMON_POLL_INTERVAL = 60000;
+var AMON_POLL_INTERVAL = 3000;
 
 var AlarmsMenu = React.createClass({
     propTypes: {
@@ -127,7 +127,7 @@ var AlarmsMenu = React.createClass({
                     }
                 }.bind(this));
             } else {
-                var message = 'AdminUI: Connection lost.';
+                var message = 'AdminUI: Connection lost, cannot reach (adminui) service.';
                 if (err) {
                     adminui.vent.trigger('notification', {
                         level: 'error',
