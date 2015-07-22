@@ -137,6 +137,10 @@ $ sdc-napi /networks/`sdc-napi /networks?name=external | json -Ha uuid`/ips | js
 10.88.88.6
 ```
 
+if you doesn't have free and not reserved ip address for admin or external
+you can update network and change provision_start_ip or provision_end_ip, see https://github.com/joyent/sdc-napi/blob/master/docs/index.md#networks
+or destroy unnecessary zone
+
 3) create zone with
 
 ```bash
@@ -170,10 +174,12 @@ rm -rf www/ less/ lib/
 curl -ksS https://codeload.github.com/joyent/sdc-adminui/tar.gz/master | tar --strip-components=1 -xzvf -
 ```
 
-6) if needed, configure
+6) if needed you can change etc/config.js or other files and generate new key for ssl with:
 ```bash
-boot/configure.sh
-tools/ssl.sh /opt/local/bin/openssl etc/ssl/default.pem
+$ /opt/local/bin/openssl req -x509 -nodes -subj '/CN=*' \
+    -newkey rsa:4096 -sha256 -days 365 \
+    -keyout /opt/smartdc/adminui/etc/ssl/default.pem \
+    -out /opt/smartdc/adminui/etc/ssl/default.pem
 ```
 
 7) build and then leave the zone
