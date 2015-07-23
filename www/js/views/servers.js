@@ -16,6 +16,7 @@ var app = require('adminui');
 var $ = require('jquery');
 var Servers = require('../models/servers');
 var ServerBootOptionsView = require('./server-boot-options');
+var utils = require('../lib/utils')
 
 require('jquery');
 require('d3');
@@ -59,6 +60,9 @@ var FilterForm = Backbone.Marionette.ItemView.extend({
         $directionInput.val(directionValue === 'asc' ? 'desc' : 'asc');
         this.onSubmit(e);
     },
+    initialize: function (options) {
+        this.options = options || [];
+    },
     onShow: function () {
         this.nictags = new NicTags();
         this.nictags.on('sync', this.renderNicTagsDropdown, this);
@@ -68,10 +72,11 @@ var FilterForm = Backbone.Marionette.ItemView.extend({
         var $select = this.$('select[name=nictag]');
         $select.empty();
         $select.append($('<option value="">any</option>'));
-        this.nictags.each(function(nt) {
+        this.nictags.each(function (nt) {
             var option = $('<option />').attr('value', nt.get('name')).html(nt.get('name'));
             $select.append(option);
         }, this);
+        utils.setFilterOptions(this.options);
     },
     getQuery: function () {
         return Backbone.Syphon.serialize(this);
@@ -79,6 +84,7 @@ var FilterForm = Backbone.Marionette.ItemView.extend({
     onSubmit: _.debounce(function (e) {
         e.preventDefault();
         var params = Backbone.Syphon.serialize(this);
+        app.router.changeSearch(params);
         this.trigger('query', params);
     }, 300)
 });
@@ -88,10 +94,11 @@ var ServersView = Backbone.Marionette.Layout.extend({
     id: 'page-servers',
     template: require('../tpl/servers.hbs'),
     events: {
-        'click .toggle-boot-options':'toggleBootOptions'
+        'click .toggle-boot-options': 'toggleBootOptions'
     },
     url: function () {
-        return 'servers';
+        var url = 'servers';
+        return location.pathname === '/servers' ? (url + location.search || '') : url;
     },
     regions: {
         'bootOptionsRegion': {
@@ -114,9 +121,11 @@ var ServersView = Backbone.Marionette.Layout.extend({
         }
     },
 
-    initialize: function () {
-        this.collection = new Servers(null, {params: {sort: 'hostname'}});
-        this.filterForm = new FilterForm();
+    initialize: function (options) {
+        this.collection = new Servers(null, {
+            params: Object.keys(options || {}).length ? options : {sort: 'hostname'}
+        });
+        this.filterForm = new FilterForm(options);
 
         this.listenTo(this.collection, 'request', this.onRequest);
         this.listenTo(this.collection, 'sync', this.onSync);
@@ -134,8 +143,9 @@ var ServersView = Backbone.Marionette.Layout.extend({
 
     onShow: function () {
         this.listenTo(this.filterForm, 'query', this.query);
-
-        React.render(ServersList({collection: this.collection}), this.$('.servers-list-region').get(0));
+        React.render(ServersList({
+            collection: this.collection
+        }), this.$('.servers-list-region').get(0));
         this.filterRegion.show(this.filterForm);
         app.vent.trigger('settitle', 'servers');
     },
@@ -168,7 +178,9 @@ var ServersView = Backbone.Marionette.Layout.extend({
 
             var bootOptions = new Backbone.Model();
             bootOptions.url = '/api/boot/default';
-            var bootOptionsView = new ServerBootOptionsView({model: bootOptions});
+            var bootOptionsView = new ServerBootOptionsView({
+                model: bootOptions
+            });
             bootOptionsView.on('saved', saved);
             bootOptionsView.on('cancel', close);
 
@@ -180,4 +192,3 @@ var ServersView = Backbone.Marionette.Layout.extend({
 });
 
 module.exports = ServersView;
-
