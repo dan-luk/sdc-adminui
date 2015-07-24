@@ -22,36 +22,39 @@ var MultipleNicConfigComponent = React.createClass({
         expandAntispoofOptions: React.PropTypes.bool,
         onChange: React.PropTypes.func
     },
-    getValue: function() {
+    getValue: function () {
         return this.state.nics;
     },
-    getDefaultProps: function() {
+    getDefaultProps: function () {
         return {
             expandAntispoofOptions: false,
             networkFilters: {},
             nics: []
         };
     },
-    getInitialState: function() {
-        var state = {};
+    getInitialState: function () {
+        var state = {
+            networks: [],
+            networkPools: []
+        };
         state.nics = this.props.nics || [];
         console.log('[MultiNicConfig] initial state', state);
         state.networkFilters = this.props.networkFilters;
         state.expandAntispoofOptions = this.props.expandAntispoofOptions;
         return state;
     },
-    componentWillReceiveProps: function(props) {
+    componentWillReceiveProps: function (props) {
         if (props.nics) {
             this.setState({nics: props.nics});
         }
     },
-    onNicPropertyChange: function(prop, value, nic, com) {
+    onNicPropertyChange: function (prop, value, nic, com) {
         console.info('[MultiNicConfig] onNicPropertyChange', prop, value, nic, com);
         var nics = this.state.nics;
         nics[com.props.index] = nic;
 
         if (prop === 'primary' && value === true) {
-            nics = _.map(nics, function(n) {
+            nics = _.map(nics, function (n) {
                 if (n === nic) {
                     n.primary = true;
                 } else {
@@ -68,24 +71,32 @@ var MultipleNicConfigComponent = React.createClass({
             }
         }.bind(this));
     },
-    addNewNic: function() {
+    addNewNic: function () {
         var nics = this.state.nics;
         nics.push({});
-        this.setState({nics: nics}, function() {
+        this.setState({nics: nics}, function () {
             this.props.onChange(nics);
         }.bind(this));
     },
-    removeNic: function(index) {
+    removeNic: function (index) {
         var nics = this.state.nics.splice(index, 1);
         if (nics.length === 1) {
             nics[0].primary = true;
         }
-        this.setState({nics: nics}, function() {
+        this.setState({nics: nics}, function () {
             this.props.onChange(nics);
         }.bind(this));
     },
-    render: function() {
-        var nodes = _.map(this.state.nics, function(nic, i) {
+    onLoadNetworks: function (networks, networkPools) {
+        this.setState({
+            networks: networks,
+            networkPools: networkPools
+        });
+    },
+    render: function () {
+        var networks = this.state.networks;
+        var networkPools = this.state.networkPools;
+        var nodes = _.map(this.state.nics, function (nic, i) {
             return <div className="nic-config-component-container">
                 <div className="nic-config-action">
                     <a className="remove" onClick={this.removeNic.bind(this, i)}>
@@ -98,15 +109,18 @@ var MultipleNicConfigComponent = React.createClass({
                         onPropertyChange={this.onNicPropertyChange}
                         networkFilters={this.state.networkFilters}
                         index={i}
-                        nic={nic} />
+                        nic={nic}
+                        networks={networks}
+                        networkPools={networkPools}
+                        onLoadNetworks={this.onLoadNetworks} />
                 </div>
             </div>;
         }, this);
 
-        return <div className="multiple-nic-config-component">
+        return (<div className="multiple-nic-config-component">
             {nodes}
             <a className="attach-network-interface" onClick={this.addNewNic}>Attach Another NIC</a>
-        </div>;
+        </div>);
     }
 });
 
