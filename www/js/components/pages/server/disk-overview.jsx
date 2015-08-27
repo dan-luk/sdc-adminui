@@ -36,6 +36,12 @@ var ServerDiskOverview = React.createClass({
 
         var provisionable = total - usedBytes;
 
+        function fixGb(value) {
+            return (value - Math.floor(value)) ? value.toFixed(1) : value;
+        }
+
+        usedInGB = fixGb(usedInGB);
+        var unusedInGB = fixGb(provisionable / 1024 / 1024 / 1024);
 
         return <div className="disk-overview">
             <div className="row">
@@ -48,11 +54,11 @@ var ServerDiskOverview = React.createClass({
                     <ServerDiskUtilizationCircle diameter="120px" inner="38" server={this.props.server} />
                 </div>
                 <div className="provisionable-disk">
-                    <div className="value">{provisionable/1024/1024/1024} GB</div>
+                    <div className="value">{unusedInGB} GB</div>
                     <div className="title">Provisionable</div>
                 </div>
                 <div className="provisioned-disk">
-                    <div className="value">{usedBytes/1024/1024/1024} GB</div>
+                    <div className="value">{usedInGB} GB</div>
                     <div className="title">Provisioned</div>
                 </div>
 
