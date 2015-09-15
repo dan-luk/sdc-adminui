@@ -50,8 +50,8 @@ ssh root@10.88.88.200
 
 2) get headnode uuid:
 ```bash
-$ sdc-server list
-headnode             564db874-1cca-8c84-7bfd-2602014520f9     7.0     true   running     4095  10.99.99.7
+$ sysinfo | json UUID
+564db874-1cca-8c84-7bfd-2602014520f9
 ```
 
 3) get adminui service uuid:
@@ -60,7 +60,7 @@ $ sapiadm showapp sdc | grep adminui
 adminui    be5e7c5d-0906-4cf5-9e87-f8ec2f85d919  2
 ```
 
-4) update adminui service, add parameter server_uuid:
+4) update adminui service, add parameter server_uuid (where will be provision of new instance):
 ```bash
 sapiadm update be5e7c5d-0906-4cf5-9e87-f8ec2f85d919 params.server_uuid=564db874-1cca-8c84-7bfd-2602014520f9
 ```
@@ -76,7 +76,7 @@ Provisioned instance 17950378-09d2-475d-9f21-67df4761a36a successfully
 /usbkey/scripts/add_external_nic.sh 17950378-09d2-475d-9f21-67df4761a36a
 ```
 
-5) zlogin to adminui-test zone and check networks:
+5) zlogin toinstance and check networks:
 ```bash
 $ zlogin 17950378-09d2-475d-9f21-67df4761a36a
 ```
