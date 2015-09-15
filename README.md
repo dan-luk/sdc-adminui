@@ -60,7 +60,7 @@ $ sapiadm showapp sdc | grep adminui
 adminui    be5e7c5d-0906-4cf5-9e87-f8ec2f85d919  2
 ```
 
-4) update adminui service, add parameter server_uuid (where will be provision of new instance):
+4) update adminui service, add parameter server_uuid (where new instance will be provisioned):
 ```bash
 sapiadm update be5e7c5d-0906-4cf5-9e87-f8ec2f85d919 params.server_uuid=564db874-1cca-8c84-7bfd-2602014520f9
 ```
@@ -76,7 +76,7 @@ Provisioned instance 17950378-09d2-475d-9f21-67df4761a36a successfully
 /usbkey/scripts/add_external_nic.sh 17950378-09d2-475d-9f21-67df4761a36a
 ```
 
-5) zlogin toinstance and check networks:
+5) zlogin to the instance and check networks:
 ```bash
 $ zlogin 17950378-09d2-475d-9f21-67df4761a36a
 ```
