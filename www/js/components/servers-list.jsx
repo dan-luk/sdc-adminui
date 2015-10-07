@@ -94,7 +94,7 @@ var ServersListItem = React.createClass({
     },
 
     convertLastHeartbeat: function (value) {
-        return _.str.sprintf(moment(value).utc().format('MMM Do, H:mm:ss'));
+        return _.str.sprintf(moment(value).utc().format('MMMM D H:mm') + 'Z');
     },
 
     postRender: function () {
@@ -110,7 +110,7 @@ var ServersListItem = React.createClass({
 
         setTooltip('.last-platform', 'top', 'body', _.str.sprintf('Platform Version', model.get('current_platform')));
         setTooltip('.last-boot', 'top', 'body', _.str.sprintf('Last boot at %s',
-                moment(model.get('last_boot')).utc().format('MMMM D H:mm') + 'Z')));
+                moment(model.get('last_boot')).utc().format('MMMM D H:mm') + 'Z'));
 
         var last_heartbeat = model.get('last_heartbeat');
         if (this.isRecentHeartbeat(last_heartbeat)) {
