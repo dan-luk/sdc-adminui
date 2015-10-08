@@ -90,7 +90,7 @@ var ServersListItem = React.createClass({
     },
 
     isRecentHeartbeat: function (time) {
-        return this.props.server.toJSON().status === 'running' && new Date() - new Date(time) < 60000;
+        return this.props.server.toJSON().status === 'running' && new Date() - new Date(time) < 2 * 60000;
     },
 
     convertLastHeartbeat: function (value) {
