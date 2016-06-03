@@ -29,6 +29,7 @@ var Components = {
     'alarms': require('./components/pages/alarms'),
     'vm': require('./components/pages/vm'),
     'vms': require('./components/pages/vms'),
+    'volumes': require('./components/pages/volumes'),
     'settings': require('./components/pages/settings'),
     'user': require('./components/pages/user'),
     'images': require('./components/pages/images'),
@@ -85,6 +86,8 @@ module.exports = Backbone.Marionette.AppRouter.extend({
         'vms': 'showVms',
         'vms/:uuid(/)': 'showVm',
         'vms2/:uuid(/)': 'showVm2',
+        'volumes': 'showVolumes',
+        'volumes/:uuid(/)': 'showVolume',
         'users/:uuid(/)': 'showUser',
         'users/:uuid/:tab(/)': 'showUser',
         'users/:account/:uuid/:tab(/)': 'showUser',
@@ -387,6 +390,12 @@ module.exports = Backbone.Marionette.AppRouter.extend({
         }
         this.authenticated().then(function () {
             this.presentComponent('vms', args ? {params: args} : {});
+        }.bind(this));
+    },
+
+    showVolumes: function (args) {
+        this.authenticated().then(function () {
+            this.presentComponent('volumes', args ? {params: args} : {});
         }.bind(this));
     },
 

@@ -74,6 +74,21 @@ INPUT_TYPES.ip = React.createClass({
     }
 });
 
+INPUT_TYPES.type = React.createClass({
+    onChange: function (e) {
+        this.props.onChange('type', e.target.value);
+    },
+    render: function () {
+        return (<div className="form-group col-md-3">
+            <label className="control-label">Type</label>
+            <select onChange={this.onChange} value={this.props.value} name="type" className="form-control">
+                <option value="">any</option>
+                <option value="tritonnfs">tritonnfs</option>
+            </select>
+        </div>);
+    }
+});
+
 var TypeaheadUser = require('../views/typeahead-user');
 INPUT_TYPES.owner_uuid = React.createClass({
     onSelectUser: function (user) {
