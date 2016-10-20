@@ -39,18 +39,14 @@ JSSTYLE_FLAGS    = -o "indent=2,doxygen,unparenthesized-return=0,line-length=120
 REPO_MODULES	 =
 SMF_MANIFESTS_IN = smf/manifests/adminui.xml.in
 
-NODE_PREBUILT_VERSION=v0.10.48
+
+NODE_PREBUILT_VERSION=v4.6.1
 NODE_PREBUILT_TAG=zone
 NODE_PREBUILT_IMAGE=fd2cc906-8938-11e3-beab-4359c665ac99
 
 
-
 include ./tools/mk/Makefile.defs
-ifeq ($(shell uname -s),SunOS)
-	include ./tools/mk/Makefile.node_prebuilt.defs
-else
-	include ./tools/mk/Makefile.node.defs
-endif
+include ./tools/mk/Makefile.node.defs
 include ./tools/mk/Makefile.smf.defs
 
 ROOT            := $(shell pwd)
@@ -65,7 +61,6 @@ RELSTAGEDIR          := /tmp/$(STAMP)
 JS_BUNDLE = ./www/app.js
 JS_BUNDLE_FILES	:= $(shell find www/js -name '*.js' -o -name '*.hbs')
 JS_BUNDLE_FILES	+= ./tools/build-js
-
 
 .PHONY: all
 all: $(SMF_MANIFESTS) node_modules js sdc-scripts
@@ -127,14 +122,9 @@ publish: release
 	cp $(ROOT)/$(RELEASE_TARBALL) $(BITS_DIR)/adminui/$(RELEASE_TARBALL)
 
 
-
 include ./tools/mk/Makefile.deps
 include ./tools/mk/Makefile.targ
-ifeq ($(shell uname -s),SunOS)
-	include ./tools/mk/Makefile.node_prebuilt.targ
-else
-	include ./tools/mk/Makefile.node.targ
-endif
+include ./tools/mk/Makefile.node.targ
 include ./tools/mk/Makefile.smf.targ
 
 sdc-scripts: deps/sdc-scripts/.git

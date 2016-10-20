@@ -31,7 +31,7 @@
 #
 # (1) Invoking node, node-waf, or npm as part of the build process, as in "npm
 #     install" and "node-waf configure build".  To facilitate this, this
-#     Makefile defines Make variables NODE, NODE_WAF, and NPM that you can use
+#     Makefile defines Make variables NODE, and NPM that you can use
 #     to invoke these commands during the build process.  You MUST NOT assume
 #     that these variables just evaluate to the filenames themselves, as they
 #     may have environment variable definitions and other things that prevent
@@ -55,7 +55,7 @@
 # (2) Specifying paths for invoking node, node-waf, or npm at RUNTIME, as in
 #     specifying the path to node used for the start method of your service's
 #     SMF manifest.  For this, this Makefile defines variables NODE_EXEC,
-#     NODE_WAF_EXEC, and NPM_EXEC, which represent the relative paths of these
+#     and NPM_EXEC, which represent the relative paths of these
 #     files from the root of the workspace.  You MUST NOT use these variables
 #     to invoke these commands during the build process.  See (1) instead.
 #
@@ -89,16 +89,14 @@ NODE_CONFIG_FLAGS += --prefix=$(TOP)/$(NODE_INSTALL)
 
 ifeq ($(shell uname -s),SunOS)
 	NODE_CONFIG_FLAGS += 	--with-dtrace \
-				--openssl-libpath=/opt/local/lib \
-				--openssl-includes=/opt/local/include
+				--shared-openssl-libpath=/opt/local/lib \
+				--shared-openssl-includes=/opt/local/include
 endif
 
 NODE_EXEC	= $(NODE_INSTALL)/bin/node
-NODE_WAF_EXEC	= $(NODE_INSTALL)/bin/node-waf
 NPM_EXEC	= $(NODE_INSTALL)/bin/npm
 
 # Ensure these use absolute paths to the executables to allow running
 # from a dir other than the project top.
 NODE		:= $(TOP)/$(NODE_EXEC)
-NODE_WAF	:= $(TOP)/$(NODE_WAF_EXEC)
 NPM		:= PATH=$(TOP)/$(NODE_INSTALL)/bin:$(PATH) node $(TOP)/$(NPM_EXEC)
