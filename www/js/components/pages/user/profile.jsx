@@ -43,6 +43,7 @@ var UserProfile = React.createClass({
         var isTopLevelAccount = !user.account;
 
         var locked = user.pwdaccountlockedtime && (new Date()).getTime() < user.pwdaccountlockedtime;
+        var accountLockedTime = moment(new Date(Number(user.pwdaccountlockedtime || 0))).utc().format(DATE_FORMAT);
         var pwdfailuretimes = [];
         if (user.pwdfailuretimes) {
             if (! Array.isArray(user.pwdfailuretimes)) {
@@ -71,7 +72,8 @@ var UserProfile = React.createClass({
                             <div className="alert alert-warning">
                                 <h5><strong>User Account Temporarily Locked</strong></h5>
                                 <p>
-                                    This account is locked until <strong>{moment(new Date(Number(user.pwdaccountlockedtime))).utc().format(DATE_FORMAT)}</strong> due to too many failed password attempts.
+                                    This account is locked until <strong>{accountLockedTime}</strong>
+                                    &nbsp;due to too many failed password attempts.
                                 </p>
                                 <p>
                                 <a onClick={this.props.handleUnlockUser} className="btn btn-default">
