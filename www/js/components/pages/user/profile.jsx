@@ -16,7 +16,7 @@ var BackboneMixin = require('../../_backbone-mixin');
 var moment = require('moment');
 var UserForm = require('../../../views/user-form');
 var BB = require('../../bb');
-var dateFormat = 'D MMMM, YYYY HH:mm:ss z';
+var DATE_FORMAT = 'D MMMM, YYYY HH:mm:ss z';
 
 var UserProfile = React.createClass({
     mixins: [BackboneMixin],
@@ -56,12 +56,12 @@ var UserProfile = React.createClass({
         pwdfailuretimes = pwdfailuretimes.map(function (m) {
             var date = moment(new Date(Number(m)));
             return {
-                absolute: date.utc().format(dateFormat),
+                absolute: date.utc().format(DATE_FORMAT),
                 relative: date.fromNow()
             };
         });
-        var created = moment.unix(user['created_at'] / 1000).utc().format(dateFormat);
-        var updated = moment.unix(user['updated_at'] / 1000).utc().format(dateFormat);
+        var created = moment.unix(user['created_at'] / 1000).utc().format(DATE_FORMAT);
+        var updated = moment.unix(user['updated_at'] / 1000).utc().format(DATE_FORMAT);
 
         return (
             <div className="row">
@@ -71,7 +71,7 @@ var UserProfile = React.createClass({
                             <div className="alert alert-warning">
                                 <h5><strong>User Account Temporarily Locked</strong></h5>
                                 <p>
-                                    This account is locked until <strong>{moment(new Date(Number(user.pwdaccountlockedtime))).utc().format(dateFormat)}</strong> due to too many failed password attempts.
+                                    This account is locked until <strong>{moment(new Date(Number(user.pwdaccountlockedtime))).utc().format(DATE_FORMAT)}</strong> due to too many failed password attempts.
                                 </p>
                                 <p>
                                 <a onClick={this.props.handleUnlockUser} className="btn btn-default">
